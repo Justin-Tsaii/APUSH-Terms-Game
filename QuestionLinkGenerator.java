@@ -7,9 +7,10 @@ import org.jsoup.select.Elements;
 import java.util.Random;
 import java.util.random.*;
 
-public class QuestionGenerator {
+public class QuestionLinkGenerator {
+    private SelectTerm m_SelectTerm = new SelectTerm();
     private static final String webURL = "https://www.apstudent.com/ushistory/cards.php";
-    private static String[] link_arr = new String[32];
+    private static String[] link_arr = new String[31];
     public static String[] question_link_arr = new String[20];
     private static int index = 0;
 
@@ -20,7 +21,7 @@ public class QuestionGenerator {
             final Document document = Jsoup.connect(webURL).get();
             Elements links = document.select("a[href]");
             for (Element link : links) {
-                if(link.text().contains("1")){
+                if(link.text().contains("1") && !link.text().contains("1603")){
                     link_arr[index] = link.absUrl("href");
                     //System.out.println(link_arr[index]);
                     index++;
@@ -36,8 +37,9 @@ public class QuestionGenerator {
 
     private void randomizeQuestions(){
         for(int i = 0; i<20; i++){
-            int selected = generator.nextInt(32);
+            int selected = generator.nextInt(30);
             question_link_arr[i] = link_arr[selected];
+            System.out.println(selected);
         }
     }
 
@@ -46,10 +48,15 @@ public class QuestionGenerator {
         randomizeQuestions();
     }
 
+    public void generateTerm(){
+        m_SelectTerm.selectQuestion();
+    }
+
     public static void main(String[] args){
-        QuestionGenerator q = new QuestionGenerator();
+        QuestionLinkGenerator q = new QuestionLinkGenerator();
 
         q.createLinkArray();
+        q.generateTerm();
         
     }
     
