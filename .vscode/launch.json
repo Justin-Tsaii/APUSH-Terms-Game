@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "SelectTerms",
+            "request": "launch",
+            "mainClass": "SelectTerms",
+            "projectName": "APUSH Terms Game_93d45b36"
+        },
+        {
+            "type": "java",
+            "name": "Randomizer",
+            "request": "launch",
+            "mainClass": "Randomizer",
+            "projectName": "APUSH Terms Game_93d45b36"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"

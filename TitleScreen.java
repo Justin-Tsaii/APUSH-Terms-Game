@@ -17,6 +17,7 @@ public class TitleScreen implements ActionListener{
 
     public static String username;
 
+
     public TitleScreen(){
 
         
@@ -49,7 +50,7 @@ public class TitleScreen implements ActionListener{
         if(e.getSource() == startButton){
             String name = userText.getText();
             frame.setVisible(false);
-            NewGame m_NewGame = new NewGame();
+            GameScreen m_NewGame = new GameScreen();
         }
     }
     

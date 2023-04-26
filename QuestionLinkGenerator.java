@@ -8,7 +8,7 @@ import java.util.Random;
 import java.util.random.*;
 
 public class QuestionLinkGenerator {
-    private SelectTerm m_SelectTerm = new SelectTerm();
+    private SelectTerms m_SelectTerm = new SelectTerms();
     private static final String webURL = "https://www.apstudent.com/ushistory/cards.php";
     private static String[] link_arr = new String[31];
     public static String[] question_link_arr = new String[20];
@@ -39,7 +39,7 @@ public class QuestionLinkGenerator {
         for(int i = 0; i<20; i++){
             int selected = generator.nextInt(30);
             question_link_arr[i] = link_arr[selected];
-            System.out.println(selected);
+            //System.out.println(selected);
         }
     }
 
@@ -49,15 +49,12 @@ public class QuestionLinkGenerator {
     }
 
     public void generateTerm(){
-        m_SelectTerm.selectQuestion();
+        m_SelectTerm.makeQuestionAnswerList();
     }
 
-    public static void main(String[] args){
-        QuestionLinkGenerator q = new QuestionLinkGenerator();
-
-        q.createLinkArray();
-        q.generateTerm();
-        
+    public void activate(){
+        createLinkArray();
+        generateTerm();
     }
     
 }

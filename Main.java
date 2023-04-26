@@ -18,19 +18,12 @@ public class Main{
     
     private static JPasswordField passwordText;
     private static JLabel passwordLabel;
-    /* 
-    public Main(){
-        
-
-
-        //jFrame.pack();
-        
-
-    }*/
+    private static QuestionLinkGenerator m_QuestionLinkGenerator;
 
     public static void main(String[] args){
+        m_QuestionLinkGenerator = new QuestionLinkGenerator();
+        m_QuestionLinkGenerator.activate();
         TitleScreen m_TitleScreen = new TitleScreen();
-        
         
     }
 
