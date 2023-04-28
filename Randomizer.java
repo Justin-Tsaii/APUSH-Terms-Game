@@ -8,8 +8,8 @@ public class Randomizer {
     public static int AnswerNum = -1;
     Random selector = new Random();
 
-    public String[] RandomizeAnswers(int questionNum, String answer){
-        String[] answerList = createAnswerList(m_QuestionLinkArr[questionNum-1]);
+    public String[] RandomizeAnswers(int questionNum, String answer, StringTools stringTools){
+        String[] answerList = createAnswerList(m_QuestionLinkArr[questionNum-1], stringTools);
         String[] selectedAnswers = new String[] {"", "", "", ""};
         String chosenAnswer;
         int index;
@@ -31,38 +31,48 @@ public class Randomizer {
         return selectedAnswers;
     }
 
-    private String[] createAnswerList(String termLink){
-        String[] answerList = new String[50];
-        String wholeText, textSplit;
+    private String[] createAnswerList(String termLink, StringTools strTools){
+        String[] answerList = new String[53];
+        String wholeText, editedText;
         try{
             final Document termDoc = Jsoup.connect(termLink).get();
             Elements paragraph = termDoc.getElementsByTag("p");
             for (int par=0; par < paragraph.size() -1; par++){
                 wholeText = paragraph.get(par).html();
                 if(wholeText.contains("<br>") && !SelectTerms.breakTagAtEnd(wholeText)){
-                    answerList[par] = wholeText.substring(wholeText.indexOf(". ") + 2, wholeText.indexOf("<br>"));
+                    editedText = strTools.removeItalicized(wholeText.substring(wholeText.indexOf(".") + 1, wholeText.indexOf("<br>"))).trim();
+                    editedText = strTools.fixPunctuation(editedText);
+                    System.out.println(editedText);
+                    answerList[par] = editedText;
                     //textSplit = wholeText.replaceAll("<br>", "\n");
                 }
                 else if(wholeText.contains("1153.")){
-                    answerList[par] = wholeText.substring(wholeText.indexOf(". ") + 2, wholeText.indexOf(") "));
+                    editedText = strTools.removeItalicized(wholeText.substring(wholeText.indexOf(".") + 1, wholeText.indexOf(") "))).trim();
+                    editedText = strTools.fixPunctuation(editedText);
+                    answerList[par] = editedText;
                     //textSplit = wholeText.replace(") ", " \n ");
                     //System.out.println(textSplit);
                 }
                 else if(wholeText.contains("888.")){
-                    answerList[par] = wholeText.substring(wholeText.indexOf(". ") + 2, wholeText.indexOf("\" "));
+                    editedText = strTools.removeItalicized(wholeText.substring(wholeText.indexOf(".") + 1, wholeText.indexOf("\" "))).trim();
+                    editedText = strTools.fixPunctuation(editedText);
+                    answerList[par] = editedText;
                 }
-                else if(wholeText.contains("br>")){
-                    answerList[par] = wholeText.substring(wholeText.indexOf(". ") + 2, wholeText.indexOf("br>"));
-                    //textSplit = wholeText.replaceAll("br>", "\n");
+                else if(wholeText.contains("Ablemann")){
+                    editedText = strTools.removeItalicized(wholeText.substring(wholeText.indexOf(".") + 1, wholeText.indexOf("&"))).trim();
+                    editedText = strTools.fixPunctuation(editedText);
+                    answerList[par] = editedText;
                 }
                 else{
-                    answerList[par] = wholeText.substring(wholeText.indexOf(". ") + 2, wholeText.indexOf(" - "));
+                    editedText = strTools.removeItalicized(wholeText.substring(wholeText.indexOf(".") + 1, wholeText.indexOf(" - "))).trim();
+                    editedText = strTools.fixPunctuation(editedText);
+                    answerList[par] = editedText;
                     //textSplit = wholeText.replaceAll(" - ", "\n");
                 }
             }
         }
         catch(Exception e){
-            System.out.println("not here");
+            System.out.println("what is going on");
             return answerList;
 
         }
@@ -71,6 +81,7 @@ public class Randomizer {
 
     private boolean isInArray(String[] arr, String str){
         for(String s: arr){
+            System.out.println(s);
             if(s.equals(str)){
                 return true;
             }
@@ -94,7 +105,8 @@ public class Randomizer {
 
     public static void main(String[] args){
         Randomizer r = new Randomizer();
-        String[] s = r.RandomizeAnswers(5, "John Brown's Raid");
+        StringTools strTools = new StringTools();
+        String[] s = r.RandomizeAnswers(5, "John Brown's Raid", strTools);
         for(String str : s){
             System.out.println(str + "\n");
         }

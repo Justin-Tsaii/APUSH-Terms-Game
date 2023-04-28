@@ -8,8 +8,8 @@ import org.jsoup.select.Elements;
 public class SelectTerms {
 
     private String termURL;
-    private static String[] question_set_arr = new String[50];
-    private static String[] answer_set_arr = new String[50];
+    private static String[] question_set_arr = new String[53];
+    private static String[] answer_set_arr = new String[53];
     public static String[] question_list = new String[20];
     public static String[] answer_list = new String[20];
     private String question;
@@ -20,13 +20,17 @@ public class SelectTerms {
     public static String[] m_question_link_arr = QuestionLinkGenerator.question_link_arr;
 
 
-    public void makeQuestionAnswerList(){
+    public void makeQuestionAnswerList(StringTools strTools){
+        String thisquestion = "";
+        String ans = "";
+        int paragraphNum = 0;
         for(int i = 0; i<m_question_link_arr.length; i++){
             termURL = m_question_link_arr[i];
             try{
                 final Document termDoc = Jsoup.connect(termURL).get();
                 Elements paragraph = termDoc.getElementsByTag("p");
                 for (int par=0; par < paragraph.size() -1; par++){
+                    paragraphNum = par;
                     wholeText = paragraph.get(par).html();
                     //System.out.println(wholeText);
                     //System.out.println(countBreakTags(wholeText));
@@ -40,22 +44,34 @@ public class SelectTerms {
                     else if(wholeText.contains("888.")){
                         textSplit = wholeText.replace("\" ", "\n");
                     }
-                    else if(wholeText.contains("br>")){
-                        textSplit = wholeText.replaceAll("br>", "\n");
+                    else if(wholeText.contains("Ablemann")){
+                        textSplit = wholeText.replace("&lt;", "");
+                        textSplit = textSplit.replace("br&gt;", "\n");
+                        //textSplit = wholeText.replaceAll("<br>", "");
                     }
-                    else{
+                    else if(wholeText.contains(" - ")){
                         textSplit = wholeText.replaceAll(" - ", "\n");
                     }
+                    else{
+                        textSplit = wholeText;
+                    }
     
-                    question_set_arr[par] = textSplit.substring(textSplit.indexOf("\n"));
-                    answer_set_arr[par] = textSplit.substring(textSplit.indexOf(". ") + 2, textSplit.indexOf("\n"));
+                    thisquestion = textSplit.substring(textSplit.indexOf("\n")).trim();
+                    thisquestion = strTools.removeItalicized(thisquestion);
+                    thisquestion = strTools.fixPunctuation(thisquestion);
+                    
+                    question_set_arr[par] = thisquestion;
+                    ans = textSplit.substring(textSplit.indexOf(".") + 1, textSplit.indexOf("\n")).trim();
+                    ans = strTools.removeItalicized(ans);
+                    ans = strTools.fixPunctuation(ans);
+                    answer_set_arr[par] = ans;
                 }
-                int selectedIndex = generator.nextInt(question_set_arr.length);  
+                int selectedIndex = generator.nextInt(paragraph.size() - 1);  
                 question_list[i] = question_set_arr[selectedIndex];
                 answer_list[i] = answer_set_arr[selectedIndex];
             }
             catch(Exception e){
-                System.out.println("not here");
+                System.out.println("not here" + paragraphNum);
 
             }
         }
@@ -66,7 +82,7 @@ public class SelectTerms {
         String findStr = "<br>";
         while(lastIndex < str.length() - 4){
             lastIndex = str.indexOf(findStr, lastIndex);
-            if(lastIndex < str.length() - 4){
+            if(lastIndex < str.length() - 5){
                 return false;
             }
         }
@@ -81,10 +97,13 @@ public class SelectTerms {
         return answer_list[index];
     }
 
-    public void test(){
+    public void test(StringTools strTools){
         int count = 0;
+        String ans;
+        String question;
+        
         try{
-            final Document termDoc = Jsoup.connect("https://www.apstudent.com/ushistory/cards/cards18.html").get();
+            final Document termDoc = Jsoup.connect("https://www.apstudent.com/ushistory/cards/cards32.html").get();
             Elements paragraph = termDoc.getElementsByTag("p");
             for (int par=0; par < paragraph.size() -1; par++){
                 wholeText = paragraph.get(par).html();
@@ -101,8 +120,10 @@ public class SelectTerms {
                 else if(wholeText.contains("888.")){
                     textSplit = wholeText.replace("\" ", "\n");
                 }
-                else if(wholeText.contains("br>")){
-                    textSplit = wholeText.replaceAll("br>", "\n");
+                else if(wholeText.contains("Ablemann")){
+                    textSplit = wholeText.replace("&lt;", "");
+                    textSplit = textSplit.replace("br&gt;", "\n");
+                    //textSplit = wholeText.replaceAll("<br>", "");
                 }
                 else if(wholeText.contains(" - ")){
                     textSplit = wholeText.replaceAll(" - ", "\n");
@@ -111,19 +132,23 @@ public class SelectTerms {
                     textSplit = wholeText;
                 }
                 count++;
-
-                question_set_arr[par] = textSplit.substring(textSplit.indexOf("\n"));
-                answer_set_arr[par] = textSplit.substring(textSplit.indexOf(". ") + 2, textSplit.indexOf("\n"));
-                System.out.println(answer_set_arr[par]);
-                //System.out.println(textSplit.substring(textSplit.indexOf("\n")) + par);
+                
+                question = textSplit.substring(textSplit.indexOf("\n")).trim();
+                question = strTools.removeItalicized(question);
+                question = strTools.fixPunctuation(question);
+                question_set_arr[par] = question;
+                ans = textSplit.substring(textSplit.indexOf(".") + 1, textSplit.indexOf("\n")).trim();
+                ans = strTools.removeItalicized(ans);
+                ans = strTools.fixPunctuation(ans);
+                //System.out.println(ans);
             }
-            int selectedIndex = generator.nextInt(question_set_arr.length);
+            int selectedIndex = generator.nextInt(paragraph.size() - 1);
             //System.out.println(question_arr.length);
             //for(String q: question_arr){
               //  System.out.println(q);
             //}
             question = question_set_arr[selectedIndex];
-            //System.out.println(question + "\n");
+            System.out.println(question);
         }
         catch(Exception e){
             System.out.println("not here");
@@ -132,8 +157,10 @@ public class SelectTerms {
 
     public static void main (String[] args){
         SelectTerms select = new SelectTerms();
+        StringTools st = new StringTools();
         //select.makeQuestionAnswerList();
-        select.test();
+        select.test(st);
+        
     }
 
     

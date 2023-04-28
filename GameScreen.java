@@ -12,6 +12,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
+import javax.swing.text.SimpleAttributeSet;
 
 public class GameScreen implements ActionListener{
     JFrame frame = new JFrame();
@@ -42,6 +43,7 @@ public class GameScreen implements ActionListener{
 
     Randomizer m_Randomizer = new Randomizer();
     SelectTerms m_SelectTerms = new SelectTerms();
+    StringTools m_StringTools = new StringTools();
 
     public GameScreen(){
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -56,6 +58,7 @@ public class GameScreen implements ActionListener{
         textField.setBorder(BorderFactory.createLineBorder(new Color(255, 0, 0)));
         textField.setEditable(false);
 
+        SimpleAttributeSet attr = new SimpleAttributeSet();
         textArea.setBounds(50, 75, 1400, 300);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
@@ -149,7 +152,7 @@ public class GameScreen implements ActionListener{
         }
         else{
             startTime = (int) System.currentTimeMillis() / 600;
-            fake_real_Answers = m_Randomizer.RandomizeAnswers(question_num, m_SelectTerms.getAnswer(question_num-1));
+            fake_real_Answers = m_Randomizer.RandomizeAnswers(question_num, m_SelectTerms.getAnswer(question_num-1), m_StringTools);
             textField.setText("Question " + question_num);
             textArea.setText(m_SelectTerms.getQuestion(question_num-1));
             blueButton.setText(fake_real_Answers[0]);
